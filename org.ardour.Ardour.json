@@ -21,10 +21,13 @@
     "--env=ALSA_CONFIG_PATH=",
     "--own-name=org.freedesktop.ReserveDevice1.*",
     "--filesystem=xdg-run/pipewire-0",
+    "--system-talk-name=org.freedesktop.RealtimeKit1",
     "--env=TMPDIR=/var/tmp",
     "--env=LXVST_PATH=/app/extensions/Plugins/vst",
     "--env=VST3_PATH=/app/extensions/Plugins/vst3",
-    "--env=LADSPA_PATH=/app/extensions/Plugins/ladspa:/app/lib/ladspa"
+    "--env=PATH=/app/bin:/usr/bin:/app/extensions/Plugins/yabridge/bin",
+    "--allow=devel",
+    "--allow=multiarch"
   ],
   "add-extensions": {
     "org.freedesktop.LinuxAudio.Plugins": {
@@ -34,6 +37,10 @@
       "merge-dirs": "ladspa;lv2;vst;vst3",
       "subdirectories": true,
       "no-autodownload": true
+    },
+    "org.freedesktop.Platform.Compat.i386": {
+      "directory": "lib/i386-linux-gnu",
+      "version": "25.08"
     }
   },
   "cleanup": [
@@ -583,7 +590,10 @@
         "desktop-file-edit --remove-category=AudioEditing --add-category=X-AudioEditing --set-icon=${FLATPAK_ID} /app/share/applications/ardour9.desktop",
         "install -d /app/extensions/Plugins",
         "sed -e '7i export LV2_PATH=${LV2_PATH:-$HOME/.lv2:/app/extensions/Plugins/lv2:/app/lib/lv2}' -i /app/bin/ardour9",
-        "unzip -d ${FLATPAK_DEST}/share/ardour9/media ArdourBundledMedia.zip"
+        "unzip -d ${FLATPAK_DEST}/share/ardour9/media ArdourBundledMedia.zip",
+        "install -d /app/lib/i386-linux-gnu",
+        "install -Dm755 ardour-yabridge-env.sh /app/libexec/ardour-yabridge-env.sh",
+        "sed -e '7i . /app/libexec/ardour-yabridge-env.sh' -i /app/bin/ardour9"
       ],
       "sources": [
         {
@@ -600,6 +610,10 @@
         {
           "type": "patch",
           "path": "patches/ardour7-7.2-appdata-flatpak.patch"
+        },
+        {
+          "type": "file",
+          "path": "ardour-yabridge-env.sh"
         }
       ]
     }

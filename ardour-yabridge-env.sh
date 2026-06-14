@@ -25,6 +25,7 @@ if [ -d "$YABRIDGE_DIR" ]; then
     fi
     export WINEPREFIX="${WINEPREFIX:-$HOST_HOME/.local/share/yabridge/wineprefix}"
     export WINELOADER="$YABRIDGE_DIR/bin/wine"
+    export WINEDEBUG=-all
     export WINEDLLOVERRIDES="${WINEDLLOVERRIDES:-winemenubuilder.exe=}"
     # Wine's FUTEX2-based fast sync. Substantially lower audio-thread latency
     # for bridged plugins than Wine's default server-side sync — the single
